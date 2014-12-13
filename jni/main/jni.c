@@ -35,25 +35,22 @@
 #include "SDL.h"
 #include "SDL_revision.h"
 
-jstring
-Java_com_example_twolibs_TwoLibs_stringFromJNI( JNIEnv* env,
-                                                  jobject thiz )
+jstring Java_org_libsdl_app_SDLActivity_stringFromJNI( JNIEnv* env, jobject thiz)
 {
 	SDL_version linked;
 	unsigned ver = avutil_version();
 	char buf[512] = "", *ptr = buf;
-	ptr += sprintf(ptr, "avutil %d.%d.%d\n", ver>>16, (ver>>8)&0xff, ver&0xff); 
+	ptr += sprintf(ptr, "avutil %d.%d.%d ", ver>>16, (ver>>8)&0xff, ver&0xff); 
 
 	SDL_GetVersion(&linked);
-    ptr += sprintf(ptr, "sdl: %d.%d.%d.%d (%s)\n",
+    ptr += sprintf(ptr, "sdl: %d.%d.%d.%d (%s)",
            linked.major, linked.minor, linked.patch,
            SDL_GetRevisionNumber(), SDL_GetRevision());
 
     return (*env)->NewStringUTF(env, buf);
 }
 
-jint Java_com_example_twolibs_TwoLibs_ffInit(JNIEnv* env,
-                                                  jobject thiz )
+jint Java_org_libsdl_app_SDLActivity_ffInit(JNIEnv* env, jobject thiz )
 {
 #if CONFIG_AVDEVICE
     avdevice_register_all();
