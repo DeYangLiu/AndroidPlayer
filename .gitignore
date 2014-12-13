@@ -1,0 +1,14 @@
+#symbol links
+jni/ffmpeg
+jni/SDL
+
+#generated files
+bin
+gen
+libs
+obj
+build.xml
+local.properties
+proguard-project.txt
+project.properties
+*.swp
