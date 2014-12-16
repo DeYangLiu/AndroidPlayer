@@ -27,26 +27,19 @@ else
 
 endif # FFMPEG_STANDALONE_BUILD
 
-FF_CONFIGURATION_FLAGS :=
-
-ifeq ($(FFMPEG_COMPILE_STATIC),yes)
-    FF_CONFIGURATION_FLAGS += --enable-static
-else
-    FF_CONFIGURATION_FLAGS += --disable-static
-endif
-
-ifeq ($(FFMPEG_COMPILE_SHARED),yes)
-    FF_CONFIGURATION_FLAGS += --enable-shared
-else
-    FF_CONFIGURATION_FLAGS += --disable-shared
-endif
-
+FFMPEG_COMPILE_SHARED ?= no 
 FF_CONFIGURATION_FLAGS_GPL :=
+
+FF_CONFIGURATION_FLAGS :=
+ifeq ($(FFMPEG_COMPILE_SHARED),yes)
+    FF_CONFIGURATION_FLAGS += --enable-shared --disable-static
+else
+    FF_CONFIGURATION_FLAGS += --disable-shared --enable-static
+endif
 
 ifeq ($(FFMPEG_COMPILE_GPL),yes)
     FF_CONFIGURATION_FLAGS_GPL := --enable-gpl
 endif
-
 
 FF_CONFIGURATION_STRING := \
     --arch=$(TARGET_ARCH) \
@@ -56,7 +49,7 @@ FF_CONFIGURATION_STRING := \
     --sysroot=$(NDK_SYSROOT) \
     $(FF_CONFIGURATION_FLAGS)
 
-ifeq ($(VERSION_BRANCH),1.1)
+ifneq (,$(filter $(VERSION_BRANCH),2.5 1.1))
     FF_CONFIGURATION_STRING += \
         --enable-avresample
 endif
@@ -124,12 +117,10 @@ ifneq ($(FF_CONFIGURATION_STRING), $(FF_LAST_CONFIGURATION_STRING_OUTPUT))
         mkdir -p $(FFMPEG_CONFIG_DIR); \
         cd $$OLDPWD;
 
-    $(warning ============================================================)
     $(warning Creating configuration directory...)
     $(warning $(FF_CREATE_CONFIG_DIR_COMMAND))
     FF_CREATE_CONFIG_DIR_OUTPUT := $(shell $(FF_CREATE_CONFIG_DIR_COMMAND))
     $(warning Done.)
-    $(warning ============================================================)
 
 
 
@@ -141,10 +132,9 @@ ifneq ($(FF_CONFIGURATION_STRING), $(FF_LAST_CONFIGURATION_STRING_OUTPUT))
             --disable-everything \
             --disable-mmx \
             --disable-yasm; \
-        make -j; \
         cd $$OLDPWD;
 
-    ifeq ($(VERSION_BRANCH),1.1)
+    ifneq (,$(filter $(VERSION_BRANCH),2.5 1.1))
         FF_CREATE_REQUIRED_FILES_COMMAND := \
             cd $(FFMPEG_ROOT_DIR)/$(FFMPEG_CONFIG_DIR); \
             ../../configure \
@@ -154,7 +144,6 @@ ifneq ($(FF_CONFIGURATION_STRING), $(FF_LAST_CONFIGURATION_STRING_OUTPUT))
                 --enable-avresample \
                 --disable-mmx \
                 --disable-yasm; \
-            make -j8; \
             cd $$OLDPWD;
     endif
 
@@ -168,7 +157,6 @@ ifneq ($(FF_CONFIGURATION_STRING), $(FF_LAST_CONFIGURATION_STRING_OUTPUT))
                 --disable-everything \
                 --disable-mmx \
                 --disable-yasm; \
-            make -j; \
             cd $$OLDPWD;
     endif
 
@@ -182,24 +170,21 @@ ifneq ($(FF_CONFIGURATION_STRING), $(FF_LAST_CONFIGURATION_STRING_OUTPUT))
                 --disable-everything \
                 --disable-mmx \
                 --disable-yasm; \
-            make -j; \
             cd $$OLDPWD;
     endif
 
-    $(warning ============================================================)
-    $(warning Creating required files...)
-    $(warning $(FF_CREATE_REQUIRED_FILES_COMMAND))
-    FF_CREATE_REQUIRED_FILES_OUTPUT := $(shell $(FF_CREATE_REQUIRED_FILES_COMMAND))
-    $(warning Done.)
-    $(warning ============================================================)
+    $(warning ==version_branch=$(VERSION_BRANCH)==========)
+    $(warning ==target_arch=$(TARGET_ARCH)========)
 
     ARCH_ARM :=
     ARCH_MIPS :=
     ARCH_X86 :=
-    ARCH_INLINE_ASM := 1
+    ARCH_INLINE_ASM := 1#
+    ARCH_INLINE_STR := yes
     ifeq ($(TARGET_ARCH),arm)
         ARCH_ARM := 1
-        ARCH_INLINE_ASM := 0 # NDK toolchain compiles for Thumb, and ffmpeg uses generic arm code
+	ARCH_INLINE_STR := no
+        ARCH_INLINE_ASM := 0# NDK toolchain compiles for Thumb, and ffmpeg uses generic arm code
     endif
     ifeq ($(TARGET_ARCH),mips)
         ARCH_MIPS := 1
@@ -207,20 +192,24 @@ ifneq ($(FF_CONFIGURATION_STRING), $(FF_LAST_CONFIGURATION_STRING_OUTPUT))
     ifeq ($(TARGET_ARCH),x86)
         ARCH_X86 := 1
     endif
+ $(warning ==arch_inline=$(ARCH_INLINE_STR)==$(ARCH_INLINE_ASM)=======)
+
+    $(warning Creating required files...)
+    $(warning $(FF_CREATE_REQUIRED_FILES_COMMAND))
+    FF_CREATE_REQUIRED_FILES_OUTPUT := $(shell $(FF_CREATE_REQUIRED_FILES_COMMAND))
+    $(warning Done.)
 
     FF_CONFIGURATION_COMMAND := \
         cd $(FFMPEG_ROOT_DIR)/$(FFMPEG_CONFIG_DIR); \
         ../../configure $(FF_CONFIGURATION_STRING); \
         cd $$OLDPWD;
 
-    $(warning ============================================================)
     $(warning Configuring FFmpeg...)
     $(warning $(FF_CONFIGURATION_COMMAND))
     FF_CONFIGURATION_OUTPUT := $(shell $(FF_CONFIGURATION_COMMAND))
     $(warning Done.)
-    $(warning ============================================================)
-
-    ifeq ($(VERSION_BRANCH),1.1)
+   
+	ifneq (,$(filter $(VERSION_BRANCH),2.5 1.1))
         # NEON presence is checked at runtime, so enable it
         FF_FIX_CONFIGURATION_COMMAND := \
             cd $(FFMPEG_ROOT_DIR)/$(FFMPEG_CONFIG_DIR); \
@@ -247,6 +236,8 @@ ifneq ($(FF_CONFIGURATION_STRING), $(FF_LAST_CONFIGURATION_STRING_OUTPUT))
             sed 's/\#define HAVE_FAST_CLZ 1/\#define HAVE_FAST_CLZ 1/g' | \
             sed 's/\#define HAVE_FAST_UNALIGNED 1/\#define HAVE_FAST_UNALIGNED 0/g' | \
             sed 's/\#define CONFIG_FAST_UNALIGNED 1/\#define CONFIG_FAST_UNALIGNED 0/g' | \
+            sed 's/\#define CONFIG_ICONV 1/\#define CONFIG_ICONV 0/g' | \
+            sed 's/\#define HAVE_STRUCT_STAT_ST_MTIM_TV_NSEC 1/\#define HAVE_STRUCT_STAT_ST_MTIM_TV_NSEC 0/g' | \
             sed 's/\#define HAVE_ARMV5TE 0/\#define HAVE_ARMV5TE 1/g' | \
             sed 's/\#define HAVE_VFP 0/\#define HAVE_VFP 1/g' | \
             sed 's/\#define HAVE_NEON 0/\#define HAVE_NEON 1/g' | \
@@ -261,6 +252,9 @@ ifneq ($(FF_CONFIGURATION_STRING), $(FF_LAST_CONFIGURATION_STRING_OUTPUT))
             sed 's/HAVE_FAST_UNALIGNED=yes/!HAVE_FAST_UNALIGNED=yes/g' | \
             sed 's/HAVE_LOG2=yes/!HAVE_LOG2=yes/g' | \
             sed 's/HAVE_LOG2F=yes/!HAVE_LOG2F=yes/g' | \
+            sed 's/HAVE_INLINE_ASM=yes/HAVE_INLINE_ASM=$(ARCH_INLINE_STR)/g' | \
+            sed 's/CONFIG_ICONV=yes/!CONFIG_ICONV=yes/g' | \
+            sed 's/HAVE_STRUCT_STAT_ST_MTIM_TV_NSEC=yes/HAVE_STRUCT_STAT_ST_MTIM_TV_NSEC=no/g' | \
             sed 's/ARCH_X86_64=yes/!ARCH_X86_64=yes/g' | \
             sed 's/ARCH=x86/ARCH=$(TARGET_ARCH)/g' | \
             sed 's/!ARCH_ARM=yes/ARCH_ARM=$(if $(ARCH_ARM),yes)/g' | \
@@ -421,16 +415,13 @@ ifneq ($(FF_CONFIGURATION_STRING), $(FF_LAST_CONFIGURATION_STRING_OUTPUT))
             cd $(OLDPWD);
     endif
 
-    $(warning ============================================================)
     $(warning Fixing configuration...)
-    #$(warning $(FF_FIX_CONFIGURATION_COMMAND))
+    $(warning $(FF_FIX_CONFIGURATION_COMMAND))
     FF_FIX_CONFIGURATION_OUTPUT := $(shell $(FF_FIX_CONFIGURATION_COMMAND))
     $(warning Done.)
-    $(warning ============================================================)
 
 
-
-    ifeq ($(VERSION_BRANCH),1.1)
+	ifneq (,$(filter $(VERSION_BRANCH),2.5 1.1))
         FF_FIX_MAKEFILES_COMMAND := \
             cd $(FFMPEG_ROOT_DIR); \
                 sed 's/include $$(SUBDIR)..\/config.mak/\#include $$(SUBDIR)..\/config.mak/g' libavcodec/Makefile     > libavcodec/Makefile.android; \
@@ -559,12 +550,10 @@ ifneq ($(FF_CONFIGURATION_STRING), $(FF_LAST_CONFIGURATION_STRING_OUTPUT))
             cd $$OLDPWD;
     endif
 
-    $(warning ============================================================)
     $(warning Fixing Makefiles...)
     #$(warning $(FF_FIX_MAKEFILES_COMMAND))
     FF_FIX_MAKEFILES_OUTPUT := $(shell $(FF_FIX_MAKEFILES_COMMAND))
     $(warning Done.)
-    $(warning ============================================================)
 
 
 

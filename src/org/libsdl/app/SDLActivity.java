@@ -65,14 +65,14 @@ public class SDLActivity extends Activity {
     protected String[] getLibraries() {
         return new String[] {
             "SDL2",
-  			"avutil",
+  			/*"avutil",
 			"avcodec",
 			"avformat",
 			"avresample",
 			"swresample",
 			"swscale",
 			"avfilter",
-			"avdevice",
+			"avdevice",*/
             "main"
         };
     }
@@ -126,10 +126,8 @@ public class SDLActivity extends Activity {
         String errorMsgBrokenLib = "";
         try {
             loadLibraries();
-			String tmp = stringFromJNI(); 
-			Log.v("SDL", "string from jni: " + tmp);			
-			ffInit();
-		
+			//String tmp = stringFromJNI(); 
+			//Log.v("SDL", "string from jni: " + tmp);			
         } catch(UnsatisfiedLinkError e) {
             System.err.println(e.getMessage());
             mBrokenLibraries = true;

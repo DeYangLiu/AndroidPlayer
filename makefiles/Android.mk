@@ -6,7 +6,6 @@ LOCAL_PATH:=$(call my-dir)
 
 FFMPEG_ROOT_DIR := $(LOCAL_PATH)
 
-FFMPEG_COMPILE_SHARED ?= yes
 ifneq ($(TARGET_PRODUCT)-$(TARGET_BUILD_VARIANT),-)
     FFMPEG_STANDALONE_BUILD :=
     FFMPEG_CONFIG_DIR := android/$(TARGET_PRODUCT)-$(TARGET_BUILD_VARIANT)
@@ -26,7 +25,9 @@ endif
 VERSION_SUFFIX := -$(shell (cat $(FFMPEG_ROOT_DIR)/RELEASE))
 $(warning $(VERSION_SUFFIX))
 
-ifeq ($(findstring 1.1, $(VERSION_SUFFIX)),1.1)
+ifeq ($(findstring 2.5, $(VERSION_SUFFIX)),2.5)
+	VERSION_BRANCH := 2.5
+else ifeq ($(findstring 1.1, $(VERSION_SUFFIX)),1.1)
     VERSION_BRANCH := 1.1
 else ifeq ($(findstring 1.0, $(VERSION_SUFFIX)),1.0)
     VERSION_BRANCH := 1.0

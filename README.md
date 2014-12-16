@@ -11,8 +11,11 @@ general instructions
 for convience, put this line in your .bashrc:
 export PATH=$PATH:/mnt/android-ndk-r10d:/mnt/android-sdk-linux/tools:/mnt/android-sdk-linux/platform-tools
 
-do symbol links at first time:
+do symbol links at first time or configs are changed:
 ./bootstrap.sh
+ndk-build clean
+rm -rf jni/ffmpeg/android
+ant clean
 
 compile native code:
 ndk-build -j8 2>&1 | tee build.log
