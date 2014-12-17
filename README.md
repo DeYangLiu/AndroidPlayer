@@ -1,13 +1,8 @@
-Android AV Player using ffmpeg and SDL2
-====
+# Android AV Player using ffmpeg and SDL2
+## depends
+ffmpeg-2.5+, SDL2.0.3+, android 2.3.3+(sdk>=10).
 
-depends
-====
-ffmpeg-11
-SDL2
-
-general instructions
-====
+# general instructions
 for convience, put this line in your .bashrc:
 export PATH=$PATH:/mnt/android-ndk-r10d:/mnt/android-sdk-linux/tools:/mnt/android-sdk-linux/platform-tools
 
@@ -30,7 +25,9 @@ install to phone:
 ant debug install
 
 # ndk debug
-ndk-build NDK_DEBUG=1
-ant debug install
-adb push ./gdbserver
-ndk-gdb --start
+* ndk-build NDK_DEBUG=1
+* ant debug install
+* (optional) adb push ./gdbserver
+* ndk-gdb --start
+* b SDL_main (choose yes on shared library)
+* continue (means run on arm)
