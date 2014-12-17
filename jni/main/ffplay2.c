@@ -340,7 +340,7 @@ static int genpts = 0;
 static int lowres = 0;
 static int decoder_reorder_pts = -1;
 static int autoexit;
-static int exit_on_keydown;
+static int exit_on_keydown = 1; /*respone android back key*/
 static int exit_on_mousedown;
 static int loop = 1;
 static int framedrop = -1;
@@ -3539,6 +3539,7 @@ int main(int argc, char **argv)
     int flags;
     VideoState *is;
     char dummy_videodriver[] = "SDL_VIDEODRIVER=dummy";
+	int i;
 
     av_log_set_flags(AV_LOG_SKIP_REPEATED);
 	SDL_LogSetAllPriority(SDL_LOG_PRIORITY_INFO); /*VERBOSE*/
@@ -3559,9 +3560,14 @@ int main(int argc, char **argv)
     signal(SIGINT , sigterm_handler); /* Interrupt (ANSI).    */
     signal(SIGTERM, sigterm_handler); /* Termination (ANSI).  */
 
+	for(i = 0; i < argc; ++i){
+		SDL_Log("%02d '%s'", i, argv[i]);	
+	}
     show_banner(argc, argv, options);
 
     parse_options(NULL, argc, argv, options, opt_input_file);
+	
+	SDL_Log("filename '%s' argc %d\n", input_filename, argc);
 
     if (!input_filename) {
         SDL_Log("An input file must be specified\n");

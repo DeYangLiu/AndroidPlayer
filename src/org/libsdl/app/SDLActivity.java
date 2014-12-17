@@ -47,6 +47,7 @@ public class SDLActivity extends Activity {
     protected static View mTextEdit;
     protected static ViewGroup mLayout;
     protected static SDLJoystickHandler mJoystickHandler;
+    protected static String[] args;
 
     // This is what SDL runs in. It invokes SDL_main(), eventually
     protected static Thread mSDLThread;
@@ -92,7 +93,7 @@ public class SDLActivity extends Activity {
      * @return arguments for the native application.
      */
     protected String[] getArguments() {
-        return new String[0];
+        return args;
     }
     
     public static void initialize() {
@@ -115,13 +116,17 @@ public class SDLActivity extends Activity {
     // Setup
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.v("SDL", "onCreate():" + mSingleton);
         super.onCreate(savedInstanceState);
         
-        SDLActivity.initialize();
+		SDLActivity.initialize();
         // So we can call stuff from static callbacks
         mSingleton = this;
+		args = new String[1];
 
+		Intent i = getIntent();
+        args[0] = i.getStringExtra("filename");
+        Log.v("SDL", "onCreate(): file " + args[0]);
+        
         // Load shared libraries
         String errorMsgBrokenLib = "";
         try {
@@ -253,7 +258,7 @@ public class SDLActivity extends Activity {
             }
             SDLActivity.mSDLThread = null;
 
-            //Log.v("SDL", "Finished waiting for SDL thread");
+            Log.v("SDL", "Finished waiting for SDL thread");
         }
             
         super.onDestroy();
@@ -1186,14 +1191,14 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
     // Sensor events
     public void enableSensor(int sensortype, boolean enabled) {
         // TODO: This uses getDefaultSensor - what if we have >1 accels?
-        if (enabled) {
+        /*if (enabled) {
             mSensorManager.registerListener(this, 
                             mSensorManager.getDefaultSensor(sensortype), 
                             SensorManager.SENSOR_DELAY_GAME, null);
         } else {
             mSensorManager.unregisterListener(this, 
                             mSensorManager.getDefaultSensor(sensortype));
-        }
+        }*/
     }
     
     @Override

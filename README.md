@@ -28,3 +28,9 @@ ant debug
 
 install to phone:
 ant debug install
+
+# ndk debug
+ndk-build NDK_DEBUG=1
+ant debug install
+adb push ./gdbserver
+ndk-gdb --start
