@@ -178,6 +178,9 @@ public class SDLActivity extends Activity {
         mLayout = new AbsoluteLayout(this);
         mLayout.addView(mSurface);
 
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+			WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(mLayout);
     }
 

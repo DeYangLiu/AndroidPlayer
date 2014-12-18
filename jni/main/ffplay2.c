@@ -360,7 +360,7 @@ static char *afilters = NULL;
 static int autorotate = 1;
 
 /* current context */
-static int is_full_screen;
+static int is_full_screen = 1;
 static int64_t audio_callback_time;
 
 static AVPacket flush_pkt;
@@ -865,6 +865,7 @@ static void video_image_display(VideoState *is)
 {
     Frame *vp;
     Frame *sp;
+    SDL_Rect rect;
     int i;
 
     vp = frame_queue_peek(&is->pictq);
@@ -898,9 +899,9 @@ static void video_image_display(VideoState *is)
             }
         }
 		
-		//SDL_SetRenderDrawColor(render, 0, 0, 0, 255);	
+		 calculate_display_rect(&rect, is->xleft, is->ytop, is->width, is->height, vp->width, vp->height, vp->sar);
 		SDL_RenderClear(render);
-		SDL_RenderCopy(render, vp->bmp, NULL, NULL);
+		SDL_RenderCopy(render, vp->bmp, NULL,  &rect);
 		SDL_RenderPresent(render);
     }
 }
