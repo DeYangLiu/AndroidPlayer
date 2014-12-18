@@ -3593,6 +3593,7 @@ int main(int argc, char **argv)
         av_log(NULL, AV_LOG_FATAL, "(Did you set the DISPLAY variable?)\n");
         exit(1);
     }
+	SDL_SetHint (SDL_HINT_RENDER_SCALE_QUALITY, "best");
 
     if (!display_disable) {
 		SDL_Rect r = {0};
