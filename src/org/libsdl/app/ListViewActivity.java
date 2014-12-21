@@ -12,6 +12,9 @@ import android.widget.ArrayAdapter;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.view.KeyEvent;
+import android.widget.EditText;
+import android.widget.TextView.OnEditorActionListener;  
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -23,6 +26,8 @@ public class ListViewActivity extends Activity {
 	
 	File[] files = null; /*files in pwd*/
 	String sParent = null; /*path of ".."*/
+	int inHistory = 0;
+	History history = null;
 
 private int refreshFileList(String path)
 {
@@ -38,6 +43,7 @@ private int refreshFileList(String path)
 	}
 	files = fa;
 	listAdapter.clear();
+	listAdapter.add("History");
 	listAdapter.add("..");
 	for(File f : files){
 		listAdapter.add(f.getName());
@@ -46,41 +52,95 @@ private int refreshFileList(String path)
 	return 0;
 }
 
+int refreshHistory(int onlyHistory)
+{
+	int i, n;
+	String[] str = null;
+
+	listAdapter.clear();
+	if(1 == onlyHistory){
+		listAdapter.add("..");
+		str = history.getLines();
+		n = history.getCount();
+
+		for(i = 0; i < n; ++i){
+			listAdapter.add(str[i]);	
+		}
+	}else if(0 == onlyHistory){
+		listAdapter.add("History");
+		listAdapter.add("..");
+		for(File f : files){
+			listAdapter.add(f.getName());
+		}
+	}
+	return 0;
+}
+
+void startPlay(String fullPath)
+{
+	Intent intent = new Intent(getApplicationContext(), SDLActivity.class);
+	intent.putExtra("filename", fullPath);
+	startActivity(intent);
+	history.put(fullPath);
+}
+
+
 @Override
 public void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.main);
-    
-    mainListView = (ListView) findViewById( R.id.mainListView );
+	super.onCreate(savedInstanceState);
+	setContentView(R.layout.main);
+	setTitle("choose files...");
+	inHistory = 0;
+	history = new History(getApplicationContext());
 
-    listAdapter = new ArrayAdapter<String>(this, R.layout.simplerow);
+	final EditText editText=(EditText)findViewById(R.id.edit_text);  
+	editText.setOnEditorActionListener(new OnEditorActionListener() {  
+		@Override  
+		public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {  
+			startPlay(editText.getText().toString());
+			return false;  
+		}  
+	});  
+
+	mainListView = (ListView) findViewById( R.id.mainListView );
+	listAdapter = new ArrayAdapter<String>(this, R.layout.simplerow);
 
 	sParent = sRoot;
-    refreshFileList(sRoot);
-    
-    mainListView.setAdapter( listAdapter );
+	refreshFileList(sRoot);
 
-    mainListView.setOnItemClickListener(new OnItemClickListener() {
-  	public void onItemClick(AdapterView<?> parent, View view,
-      int position, long id) {
-	  if(0 == position){
-	  	refreshFileList(sParent);
-		if(!sParent.equals(sRoot)){
-			sParent = new File(sParent).getParent();
-		}
-		return;
-	  }
-	
-      File f = files[position-1];
-	  if(f.isDirectory()){
-	     refreshFileList(f.getPath());
-		 sParent = f.getParent();
-	  }else if(f.isFile()){
-	      Intent intent = new Intent(getApplicationContext(), SDLActivity.class);
-	      intent.putExtra("filename", f.getPath() );
-	      startActivity(intent);
-	  }
-    }});
-	
+	mainListView.setAdapter( listAdapter );
+
+	mainListView.setOnItemClickListener(new OnItemClickListener() {
+		public void onItemClick(AdapterView<?> parent, View view,
+			int position, long id) {
+			if(1 == inHistory){
+				if(0 == position){
+					inHistory = 0;
+					refreshHistory(inHistory);
+				}else{
+					startPlay(history.getLines()[position-1]);
+				}
+				return;
+			}
+
+			if( 0 == position){
+				inHistory = 1;
+				refreshHistory(inHistory);
+			}else if(1 == position){
+				refreshFileList(sParent);
+				if(!sParent.equals(sRoot)){
+					sParent = new File(sParent).getParent();
+				}
+			}else{
+				File f = files[position-2];
+				if(f.isDirectory()){
+					refreshFileList(f.getPath());
+					sParent = f.getParent();
+				}else if(f.isFile()){
+					startPlay(f.getPath());
+				}
+			}
+		}});
+
 }
 }
