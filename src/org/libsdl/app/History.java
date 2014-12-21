@@ -44,7 +44,7 @@ public class History
 	}
 	
 	String fileName = "history.txt";
-	String[] lines = new String[8];
+	String[] lines = new String[16];
 	int cnt = 0;
 	Context ctx = null; //
 
@@ -88,5 +88,24 @@ public class History
 		}	
 		write(ctx, fileName, lines, cnt);
 		return cnt;
+	}
+
+	public int remove(String str)
+	{
+		int i, j;
+		for(i = 0; i < cnt; ++i){
+			if(str.equals(lines[i])){
+				break;
+			}
+		}
+		if(i >= cnt){
+			return -1;
+		}
+		for(j = i; j < cnt-1; ++j){
+			lines[j] = lines[j+1];	
+		}
+		cnt--;
+		write(ctx, fileName, lines, cnt);
+		return 0;
 	}
 }

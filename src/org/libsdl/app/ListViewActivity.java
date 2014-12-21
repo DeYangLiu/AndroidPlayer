@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.TextView.OnEditorActionListener;  
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 
 public class ListViewActivity extends Activity {
 	private ListView mainListView ;
@@ -98,7 +99,7 @@ public void onCreate(Bundle savedInstanceState) {
 		@Override  
 		public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {  
 			startPlay(editText.getText().toString());
-			return false;  
+			return true;  
 		}  
 	});  
 
@@ -141,6 +142,19 @@ public void onCreate(Bundle savedInstanceState) {
 				}
 			}
 		}});
+
+	mainListView.setOnItemLongClickListener(new OnItemLongClickListener() {
+		public boolean onItemLongClick(AdapterView<?> arg0, View v,
+			int index, long arg3) {
+			if(0 == inHistory || index < 1){
+				return false;
+			}
+			String path = history.getLines()[index-1];
+			history.remove(path);
+			refreshHistory(inHistory);
+			return true;
+		}
+	}); 
 
 }
 }
