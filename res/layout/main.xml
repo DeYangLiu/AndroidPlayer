@@ -3,6 +3,10 @@
   android:orientation="vertical"
   android:layout_width="fill_parent"
   android:layout_height="fill_parent">
+	<Button android:id="@+id/btn_gw"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="Gateway Client"/>
 	<EditText
         android:id="@+id/edit_text"
         android:layout_width="wrap_content"

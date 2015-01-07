@@ -10,12 +10,12 @@ import java.io.File;
 import android.widget.ArrayAdapter;
 
 import android.view.View;
+import android.view.View.*; /*OnClickListener*/
 import android.widget.ListView;
 import android.widget.TextView;
 import android.view.KeyEvent;
-import android.widget.EditText;
+import android.widget.*;
 import android.widget.TextView.OnEditorActionListener;  
-import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 
@@ -93,6 +93,15 @@ public void onCreate(Bundle savedInstanceState) {
 	setTitle("choose files...");
 	inHistory = 0;
 	history = new History(getApplicationContext());
+
+	Button btn = (Button)findViewById(R.id.btn_gw);
+	btn.setOnClickListener(new OnClickListener(){
+		@Override
+		public void onClick(View v){
+			Intent intent = new Intent(getApplicationContext(), GatewayClient.class);
+			startActivity(intent);	
+		}
+	});
 
 	final EditText editText=(EditText)findViewById(R.id.edit_text);  
 	editText.setOnEditorActionListener(new OnEditorActionListener() {  

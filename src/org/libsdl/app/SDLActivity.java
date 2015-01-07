@@ -117,7 +117,8 @@ public class SDLActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+		
+		//Debug.startMethodTracing("mydebug");	
 		SDLActivity.initialize();
         // So we can call stuff from static callbacks
         mSingleton = this;
@@ -205,6 +206,7 @@ public class SDLActivity extends Activity {
         if (SDLActivity.mBrokenLibraries) {
            return;
         }
+		//Debug.stopMethodTracing();
 
         SDLActivity.handleResume();
     }

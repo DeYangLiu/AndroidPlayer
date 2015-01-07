@@ -31,3 +31,9 @@ ant debug install
 * ndk-gdb --start
 * b SDL_main (choose yes on shared library)
 * continue (means run on arm)
+
+# debug gateway
+adb logcat -s gw
+
+# jdk debug
+Using jdb with adb (no ADT)

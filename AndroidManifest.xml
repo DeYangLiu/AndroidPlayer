@@ -12,7 +12,7 @@
 			<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+			</intent-filter>
 		</activity>
 
         <activity android:name="SDLActivity"
@@ -20,6 +20,15 @@
             android:configChanges="keyboardHidden|orientation"
 			android:screenOrientation="landscape"
 			>
+		</activity>
+
+		<activity android:name="GatewayClient"
+            android:label="gw"
+			>
+			<!--<intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>-->
 		</activity>
     </application>
 
@@ -29,7 +38,13 @@
     <!-- OpenGL ES 2.0 -->
     <uses-feature android:glEsVersion="0x00020000" /> 
 
-    <!-- Allow writing to external storage -->
+    <!-- Allow rw files-->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> 
-	<uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    
+    <!--Allow Multicast-->
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>	
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
 </manifest> 

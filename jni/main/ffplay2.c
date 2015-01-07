@@ -340,7 +340,7 @@ static int genpts = 0;
 static int lowres = 0;
 static int decoder_reorder_pts = -1;
 static int autoexit;
-static int exit_on_keydown = 1; /*respone android back key*/
+static int exit_on_keydown = 0; /*respone android back key*/
 static int exit_on_mousedown;
 static int loop = 1;
 static int framedrop = -1;
@@ -3149,6 +3149,7 @@ static void event_loop(VideoState *cur_stream)
                 break;
             }
             switch (event.key.keysym.sym) {
+	    case SDLK_AC_BACK:
             case SDLK_ESCAPE:
             case SDLK_q:
                 do_exit(cur_stream);
