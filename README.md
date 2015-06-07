@@ -9,7 +9,8 @@ v2.6 --
 ## depends
 ffmpeg-2.5+, SDL2.0.3+, android 2.3.3+(sdk>=10).
 
-# patch and patches under jni/
+# patches 
+you need patch jni/*.patch
 
 # general instructions
 for convience, put this line in your .bashrc:
