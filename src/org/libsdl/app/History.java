@@ -2,6 +2,7 @@ package org.libsdl.app;
 import android.util.Log;
 import java.io.*;
 import android.content.Context;
+import android.os.Environment;
 
 public class History
 {
@@ -18,7 +19,24 @@ public class History
 				if(null == data[i]){
 					break;
 				}
-			}	
+			}
+
+			Log.v("History", "internal i " + i);
+			if(i < cnt){
+				File sdCard = Environment.getExternalStorageDirectory();
+				File dir = new File(sdCard.getAbsolutePath() + "/ffplay");
+				File file = new File(dir, "history.txt");
+				FileInputStream f = new FileInputStream(file);
+				fp = new BufferedReader( new InputStreamReader(f));
+			}
+
+			for(; i < cnt; ++i){
+				data[i] = fp.readLine();
+				if(null == data[i]){
+					break;
+				}
+			}
+
 		}catch(Exception e){
 			e.printStackTrace();
 		}

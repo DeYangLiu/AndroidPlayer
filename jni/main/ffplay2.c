@@ -1995,6 +1995,18 @@ static int video_thread(void *arg)
             || last_format != frame->format
             || last_serial != is->viddec.pkt_serial
             || last_vfilter_idx != is->vfilter_idx) {
+			if(frame->width > fs_screen_width || frame->height > fs_screen_height){
+				static char str[64] = "";
+				if(!str[0]){
+					int w, h;
+					w = fs_screen_width; //todo
+					h = fs_screen_height;
+					sprintf(str, "scale=%d:%d", w, h);
+					av_log(NULL, AV_LOG_DEBUG, "force set %s", str);
+					opt_add_vfilter(NULL, NULL, str);
+				}
+			}
+
             av_log(NULL, AV_LOG_DEBUG,
                    "Video frame changed from size:%dx%d format:%s serial:%d to size:%dx%d format:%s serial:%d\n",
                    last_w, last_h,

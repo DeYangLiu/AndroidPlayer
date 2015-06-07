@@ -1,13 +1,22 @@
 # Android AV Player using ffmpeg and SDL2
+
+history:
+v2.6 -- 
+ * ffmpeg and sdl2 : sync to newest source code.
+ * History.java : add external editable source "/sdcard/ffplay/history.txt"
+ * ffplay2.c : force set to screen size when video size too large (e.g. Cammera Photos).
+
 ## depends
 ffmpeg-2.5+, SDL2.0.3+, android 2.3.3+(sdk>=10).
+
+# patch and patches under jni/
 
 # general instructions
 for convience, put this line in your .bashrc:
 export PATH=$PATH:/mnt/android-ndk-r10d:/mnt/android-sdk-linux/tools:/mnt/android-sdk-linux/platform-tools
 
 do symbol links at first time or configs are changed:
-./bootstrap.sh
+./bootstrap.sh /mnt/OpenSource/ffmpeg /mnt/OpenSource/SDL
 ndk-build clean
 rm -rf jni/ffmpeg/android
 ant clean

@@ -243,6 +243,7 @@ ifneq ($(FF_CONFIGURATION_STRING), $(FF_LAST_CONFIGURATION_STRING_OUTPUT))
             sed 's/\#define HAVE_NEON 0/\#define HAVE_NEON 1/g' | \
             sed 's/\#define HAVE_ARMV6 0/\#define HAVE_ARMV6 1/g' | \
             sed 's/\#define HAVE_INLINE_ASM 1/\#define HAVE_INLINE_ASM $(ARCH_INLINE_ASM)/g' | \
+            sed 's/\#define HAVE_VALGRIND_VALGRIND_H 1/\#define HAVE_VALGRIND_VALGRIND_H 0/g' | \
             cat > config.h.tmp; \
             mv config.h config.h.bak; \
             mv config.h.tmp config.h; \
@@ -264,6 +265,7 @@ ifneq ($(FF_CONFIGURATION_STRING), $(FF_LAST_CONFIGURATION_STRING_OUTPUT))
             sed 's/!HAVE_ARMV6=yes/HAVE_ARMV6=yes/g' | \
             sed 's/!HAVE_NEON=yes/HAVE_NEON=yes/g' | \
             sed 's/!HAVE_VFP=yes/HAVE_VFP=yes/g' | \
+            sed 's/HAVE_VALGRIND_VALGRIND_H=yes/!HAVE_VALGRIND_VALGRIND_H=yes/g' | \
             cat > config.mak.tmp; \
             mv config.mak config.mak.bak; \
             mv config.mak.tmp config.mak; \
@@ -416,7 +418,7 @@ ifneq ($(FF_CONFIGURATION_STRING), $(FF_LAST_CONFIGURATION_STRING_OUTPUT))
     endif
 
     $(warning Fixing configuration...)
-    $(warning $(FF_FIX_CONFIGURATION_COMMAND))
+    #$(warning $(FF_FIX_CONFIGURATION_COMMAND))
     FF_FIX_CONFIGURATION_OUTPUT := $(shell $(FF_FIX_CONFIGURATION_COMMAND))
     $(warning Done.)
 
@@ -556,10 +558,16 @@ ifneq ($(FF_CONFIGURATION_STRING), $(FF_LAST_CONFIGURATION_STRING_OUTPUT))
     $(warning Done.)
 
 
+	FF_VERSION_CMD := \
+		$(FFMPEG_ROOT_DIR)/version.sh \
+		$(FFMPEG_ROOT_DIR) \
+		$(FFMPEG_ROOT_DIR)/$(FFMPEG_CONFIG_DIR)/libavutil/ffversion.h
+
+	FF_VERSION_OUTPUT := $(shell $(FF_VERSION_CMD))
 
     #Saving configuration
     FF_LAST_CONFIGURATION_STRING_COMMAND := \
         echo "$(FF_CONFIGURATION_STRING)" > $(FFMPEG_ROOT_DIR)/$(FFMPEG_CONFIG_DIR)/LAST_CONFIGURATION_STRING
     FF_LAST_CONFIGURATION_STRING_OUTPUT := $(shell $(FF_LAST_CONFIGURATION_STRING_COMMAND))
-
+    $(warning Done saving.)
 endif

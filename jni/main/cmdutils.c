@@ -49,7 +49,7 @@
 #include "libavutil/dict.h"
 #include "libavutil/opt.h"
 #include "libavutil/cpu.h"
-#define FFMPEG_VERSION "for android" //#include "libavutil/ffversion.h"
+#include "libavutil/ffversion.h"
 #include "cmdutils.h"
 #if CONFIG_NETWORK
 #include "libavformat/network.h"
