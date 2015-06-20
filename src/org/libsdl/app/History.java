@@ -11,26 +11,21 @@ public class History
 		int i = 0;
 
 		try{
-			BufferedReader fp = new BufferedReader(
-					new InputStreamReader(
-						ctx.openFileInput(fileName)));
-			for(i = 0; i < cnt; ++i){
-				data[i] = fp.readLine();
-				if(null == data[i]){
-					break;
-				}
+			BufferedReader fp = null;
+
+			File sdCard = Environment.getExternalStorageDirectory();
+			File dir = new File(sdCard.getAbsolutePath() + "/ffplay/history.txt");
+			if(!dir.exists()){
+				dir.mkdirs(); 
 			}
 
-			Log.v("History", "internal i " + i);
-			if(i < cnt){
-				File sdCard = Environment.getExternalStorageDirectory();
-				File dir = new File(sdCard.getAbsolutePath() + "/ffplay");
-				File file = new File(dir, "history.txt");
-				FileInputStream f = new FileInputStream(file);
-				fp = new BufferedReader( new InputStreamReader(f));
+			if(dir.exists()){
+				fp = new BufferedReader(new InputStreamReader(new FileInputStream(dir)));
+			}else{
+				fp = new BufferedReader(new InputStreamReader(ctx.openFileInput(fileName)));
 			}
 
-			for(; i < cnt; ++i){
+			for(i = 0; fp != null && i < cnt; ++i){
 				data[i] = fp.readLine();
 				if(null == data[i]){
 					break;
@@ -49,7 +44,18 @@ public class History
 		int i;
 	
 		try{
-			fp = ctx.openFileOutput(fileName, Context.MODE_PRIVATE);
+			File sdCard = Environment.getExternalStorageDirectory();
+			File dir = new File(sdCard.getAbsolutePath() + "/ffplay/history.txt");
+			if(!dir.exists()){
+				dir.mkdirs(); 
+			}
+
+			if(dir.exists()){
+				fp = new FileOutputStream(dir);
+			}else{
+				fp = ctx.openFileOutput(fileName, Context.MODE_PRIVATE);
+			}
+
 			for(i = 0; i < cnt; ++i){
 				fp.write(data[i].getBytes());
 				fp.write('\n');
