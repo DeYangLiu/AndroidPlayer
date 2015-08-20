@@ -16,7 +16,8 @@ public class History
 			File sdCard = Environment.getExternalStorageDirectory();
 			File dir = new File(sdCard.getAbsolutePath() + "/ffplay/history.txt");
 			if(!dir.exists()){
-				dir.mkdirs(); 
+				dir.getParentFile().mkdirs();
+				dir.createNewFile();
 			}
 
 			if(dir.exists()){
@@ -47,7 +48,8 @@ public class History
 			File sdCard = Environment.getExternalStorageDirectory();
 			File dir = new File(sdCard.getAbsolutePath() + "/ffplay/history.txt");
 			if(!dir.exists()){
-				dir.mkdirs(); 
+				dir.getParentFile().mkdirs();
+				dir.createNewFile();	
 			}
 
 			if(dir.exists()){
