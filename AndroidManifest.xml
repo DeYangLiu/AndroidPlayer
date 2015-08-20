@@ -8,6 +8,7 @@
 		<activity android:name=".ListViewActivity"
 			android:label="ffplay2"
 			android:windowSoftInputMode="stateHidden|adjustPan"
+			android:process=":process.main"
 			>
 			<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -19,6 +20,7 @@
             android:label="play"
             android:configChanges="keyboardHidden|orientation"
 			android:screenOrientation="landscape"
+			android:process=":process.sub"
 			>
 		</activity>
 
