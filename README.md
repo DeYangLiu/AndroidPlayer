@@ -23,7 +23,7 @@ rm -rf jni/ffmpeg/android
 ant clean
 
 compile native code:
-ndk-build -j8 2>&1 | tee build.log
+ndk-build -j$(nproc) 2>&1 | tee build.log
 
 prepare project at first time:
 android update project --path . --target android-21

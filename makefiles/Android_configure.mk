@@ -183,8 +183,8 @@ ifneq ($(FF_CONFIGURATION_STRING), $(FF_LAST_CONFIGURATION_STRING_OUTPUT))
     ARCH_INLINE_STR := yes
     ifeq ($(TARGET_ARCH),arm)
         ARCH_ARM := 1
-	ARCH_INLINE_STR := no
-        ARCH_INLINE_ASM := 0# NDK toolchain compiles for Thumb, and ffmpeg uses generic arm code
+#		ARCH_INLINE_STR := no
+#        ARCH_INLINE_ASM := 0# NDK toolchain compiles for Thumb, and ffmpeg uses generic arm code
     endif
     ifeq ($(TARGET_ARCH),mips)
         ARCH_MIPS := 1
@@ -244,6 +244,9 @@ ifneq ($(FF_CONFIGURATION_STRING), $(FF_LAST_CONFIGURATION_STRING_OUTPUT))
             sed 's/\#define HAVE_ARMV6 0/\#define HAVE_ARMV6 1/g' | \
             sed 's/\#define HAVE_INLINE_ASM 1/\#define HAVE_INLINE_ASM $(ARCH_INLINE_ASM)/g' | \
             sed 's/\#define HAVE_VALGRIND_VALGRIND_H 1/\#define HAVE_VALGRIND_VALGRIND_H 0/g' | \
+            sed 's/\#define CONFIG_MPEG1_XVMC_HWACCEL 1/\#define CONFIG_MPEG1_XVMC_HWACCEL 0/g' | \
+            sed 's/\#define CONFIG_MPEG2_XVMC_HWACCEL 1/\#define CONFIG_MPEG2_XVMC_HWACCEL 0/g' | \
+            sed 's/\#define CONFIG_BZLIB 1/\#define CONFIG_BZLIB 0/g' | \
             cat > config.h.tmp; \
             mv config.h config.h.bak; \
             mv config.h.tmp config.h; \
@@ -266,6 +269,9 @@ ifneq ($(FF_CONFIGURATION_STRING), $(FF_LAST_CONFIGURATION_STRING_OUTPUT))
             sed 's/!HAVE_NEON=yes/HAVE_NEON=yes/g' | \
             sed 's/!HAVE_VFP=yes/HAVE_VFP=yes/g' | \
             sed 's/HAVE_VALGRIND_VALGRIND_H=yes/!HAVE_VALGRIND_VALGRIND_H=yes/g' | \
+            sed 's/CONFIG_MPEG1_XVMC_HWACCEL=yes/!CONFIG_MPEG1_XVMC_HWACCEL=yes/g' | \
+            sed 's/CONFIG_MPEG2_XVMC_HWACCEL=yes/!CONFIG_MPEG2_XVMC_HWACCEL=yes/g' | \
+            sed 's/CONFIG_BZLIB=yes/!CONFIG_BZLIB=yes/g' | \
             cat > config.mak.tmp; \
             mv config.mak config.mak.bak; \
             mv config.mak.tmp config.mak; \

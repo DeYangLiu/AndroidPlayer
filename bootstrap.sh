@@ -8,11 +8,13 @@ ffmpeg_src=$1
 sdl_src=$2
 
 mkdir -p jni
-ln -sf $ffmpegdir jni/ffmpeg
+rm -rf jni/ffmpeg
+ln -sf $ffmpeg_src jni/ffmpeg
 ln -f makefiles/Android_configure.mk jni/ffmpeg/
 ln -f makefiles/Android_.mk jni/ffmpeg/
 ln -f makefiles/Android.mk jni/ffmpeg/
-ln -sf $sdldir  jni/SDL
+rm -rf jni/SDL
+ln -sf $sdl_src  jni/SDL
 
 #echo 'include $(call all-subdir-makefiles)' > jni/Android.mk
 #LIBS="avcodec avdevice  avfilter  avformat  avresample  avutil  swresample  swscale"
