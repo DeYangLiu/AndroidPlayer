@@ -21,6 +21,7 @@
             android:configChanges="keyboardHidden|orientation"
 			android:screenOrientation="landscape"
 			android:process=":process.sub"
+			android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
 			>
 		</activity>
 

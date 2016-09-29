@@ -13,3 +13,10 @@ proguard-project.txt
 project.properties
 *.swp
 *.log
+
+#android studio
+.idea
+gradle*
+.gradle
+build
+AndroidPlayer.iml

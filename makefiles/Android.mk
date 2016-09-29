@@ -25,7 +25,9 @@ endif
 VERSION_SUFFIX := -$(shell (cat $(FFMPEG_ROOT_DIR)/RELEASE))
 $(warning $(VERSION_SUFFIX))
 
-ifeq ($(findstring 2.8, $(VERSION_SUFFIX)),2.8)
+ifeq ($(findstring 3.0, $(VERSION_SUFFIX)),3.0)
+	VERSION_BRANCH := 2.5
+else ($(findstring 2.8, $(VERSION_SUFFIX)),2.8)
 	VERSION_BRANCH := 2.5
 else ifeq ($(findstring 2.6, $(VERSION_SUFFIX)),2.6)
 	VERSION_BRANCH := 2.5
