@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef FFMPEG_CMDUTILS_H
-#define FFMPEG_CMDUTILS_H
+#ifndef CMDUTILS_H
+#define CMDUTILS_H
 
 #include <stdint.h>
 
@@ -46,7 +46,7 @@ extern const int program_birth_year;
 
 extern AVCodecContext *avcodec_opts[AVMEDIA_TYPE_NB];
 extern AVFormatContext *avformat_opts;
-extern struct SwsContext *sws_opts;
+extern AVDictionary *sws_dict;
 extern AVDictionary *swr_opts;
 extern AVDictionary *format_opts, *codec_opts, *resample_opts;
 extern int hide_banner;
@@ -60,6 +60,11 @@ void register_exit(void (*cb)(int ret));
  * Wraps exit with a program-specific cleanup routine.
  */
 void exit_program(int ret) av_noreturn;
+
+/**
+ * Initialize dynamic library loading
+ */
+void init_dynload(void);
 
 /**
  * Initialize the cmdutils option system, in particular
@@ -277,7 +282,7 @@ typedef struct OptionGroup {
     AVDictionary *codec_opts;
     AVDictionary *format_opts;
     AVDictionary *resample_opts;
-    struct SwsContext *sws_opts;
+    AVDictionary *sws_dict;
     AVDictionary *swr_opts;
 } OptionGroup;
 
@@ -596,5 +601,7 @@ void *grow_array(void *array, int elem_size, int *size, int new_size);
 #define GET_CH_LAYOUT_DESC(ch_layout)\
     char name[128];\
     av_get_channel_layout_string(name, sizeof(name), 0, ch_layout);
+
+double get_rotation(AVStream *st);
 
 #endif /* CMDUTILS_H */
